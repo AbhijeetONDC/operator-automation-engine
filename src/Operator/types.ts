@@ -13,14 +13,18 @@ export interface GenericObject {
 }
 
 export interface IOperationInput {
-  value?: string | IOperationUnit;
-  values?: string[] | IOperationUnit;
-  // operation?: IOperationUnit;
+  value?: string | Operation;
+  values?: string[] | Operation[];
+  // operation?: Operation;
 }
 
-export interface IOperationUnit {
+export interface Operation {
   type: OPERATIONS;
   input: IOperationInput;
+}
+
+export interface InstructionSet {
+  operation: Operation;
 }
 
 export type AllExecutableOperations = GenerateUuidOperation | ReadOperation | GenerateTmpstmpOperation;

@@ -1,5 +1,5 @@
 import { evaluateOperation } from './Operator/util';
-import { OPERATIONS } from './Operator/types';
+import { OPERATIONS, InstructionSet } from './Operator/types';
 
 const samplePayload = {
   message: {
@@ -11,46 +11,59 @@ const samplePayload = {
     fulfillment_2: {
       location: {
         gps: {
-          value: '12, 23',
+          value: '12.43434343, 23.5467781',
+        },
+      },
+    },
+    fulfillment_3: {
+      location: {
+        gps: {
+          value: '12.43434343, 23.5467784',
         },
       },
     },
   },
 };
 
-const instructionSet = [
+const instructionSetSample: InstructionSet[] = [
   {
     operation: {
-      type: 'READ',
+      type: OPERATIONS.READ,
       input: { value: 'message.fulfillment.location.gps' },
     },
   },
   {
     operation: {
-      type: 'EQUAL',
+      type: OPERATIONS.NOT_EQUAL,
       input: {
         values: [
-          { operation: { type: 'READ', input: { value: 'message.fulfillment.location.gps' } } },
-          { operation: { type: 'READ', input: { value: 'message.fulfillment_2.location.gps.value' } } },
+          { type: OPERATIONS.READ, input: { value: 'message.fulfillment.location.gps' } },
+          { type: OPERATIONS.READ, input: { value: 'message.fulfillment_2.location.gps.value' } },
+          { type: OPERATIONS.READ, input: { value: 'message.fulfillment_3.location.gps.value' } },
         ],
       },
     },
   },
 ];
 
-const checkIfValidEnum = (type: string): boolean => {
+const checkIfValidEnum = (type: OPERATIONS): boolean => {
   return Object.keys(OPERATIONS).includes(type);
 };
 
-instructionSet.forEach((operations) => {
-  const isValidEnum = checkIfValidEnum(operations.operation.type);
+const runInstructionSet = (instructionSet: InstructionSet[]) => {
+  instructionSet.forEach((operations) => {
+    const isValidEnum = checkIfValidEnum(operations.operation.type);
+    if (!isValidEnum) throw new Error(`${operations.operation.type} is not a valid type`);
 
-  const operation = {
-    ...operations.operation,
-    type: operations.operation.type as OPERATIONS,
-  };
+    const operation = {
+      ...operations.operation,
+      type: operations.operation.type,
+    };
 
-  const output = evaluateOperation(samplePayload, operation as any);
+    const output = evaluateOperation(samplePayload, operation);
 
-  console.log(output);
-});
+    console.log(output);
+  });
+};
+
+runInstructionSet(instructionSetSample);

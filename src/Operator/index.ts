@@ -76,4 +76,25 @@ class EqualOperation extends Operator {
   }
 }
 
-export { GenerateUuidOperation, EqualOperation, GenerateTmpstmpOperation, ReadOperation };
+class NotEqualOperation extends Operator {
+  __process(): any {
+    const value = this.input?.getValue();
+    // let notEqual = true;
+
+    if (_.isArray(value) && value.length > 1) {
+      const resolvedValues = new Set();
+      value.forEach((eachValue) => {
+        if (typeof eachValue === 'object' && eachValue?.operation) {
+          const resolvedValue = evaluateOperation(this.context, eachValue?.operation);
+          resolvedValues.add(resolvedValue);
+        }
+      });
+      if (resolvedValues.size > 1) this.output = new Output(true);
+      else this.output = new Output(false);
+
+      return this;
+    } else throw new Error('More than 1 input arrays elements are required');
+  }
+}
+
+export { GenerateUuidOperation, EqualOperation, NotEqualOperation, GenerateTmpstmpOperation, ReadOperation };

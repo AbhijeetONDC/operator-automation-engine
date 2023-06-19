@@ -1,9 +1,9 @@
 import { evaluateOperation } from './util';
-import { GenericObject, IOperationUnit, IOperationInput } from './types';
+import { GenericObject, Operation, IOperationInput } from './types';
 
 abstract class IOElement {
   context: GenericObject = {};
-  operation?: IOperationUnit;
+  operation?: Operation;
   value: any;
   __process() {
     if (this.operation) {

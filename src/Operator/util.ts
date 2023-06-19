@@ -1,8 +1,14 @@
-import { GenerateUuidOperation, ReadOperation, EqualOperation, GenerateTmpstmpOperation } from './index';
+import {
+  GenerateUuidOperation,
+  ReadOperation,
+  EqualOperation,
+  NotEqualOperation,
+  GenerateTmpstmpOperation,
+} from './index';
 import { Input } from './schema';
-import { AllExecutableOperations, GenericObject, IOperationInput, IOperationUnit, OPERATIONS } from './types';
+import { AllExecutableOperations, GenericObject, IOperationInput, Operation, OPERATIONS } from './types';
 
-const evaluateOperation = (context: GenericObject, op: IOperationUnit) => {
+const evaluateOperation = (context: GenericObject, op: Operation) => {
   const opt = __getOperation(context, op.type);
   if (op.input) {
     opt.input = __evaluateInput(context, op.input);
@@ -31,7 +37,7 @@ const __getOperation = (context: GenericObject, opType: OPERATIONS): AllExecutab
     case 'EQUAL':
       return new EqualOperation(context);
     case 'NOT_EQUAL':
-      return new GenerateTmpstmpOperation(context);
+      return new NotEqualOperation(context);
     default:
       throw new Error('Operation not found');
   }
