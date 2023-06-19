@@ -1,0 +1,37 @@
+log-verification:
+  server:
+    domain: retail
+  paths:
+    search:
+      schema:
+        $ref: 'schema refrence'
+      validation:
+        - operation:
+            type: EQUAL
+  flows:
+    non_serviceable_1:
+      idMap: 'search, on_search, select_1, on_select, select_2, ...'
+      action_sequence: 'search, on_search, select, on_select, select, ...'
+      validation:
+        - operation:
+            type: NOT_EQUAL
+            input:
+              values:
+                - operation:
+                    type: READ
+                    value: select_1.message.fulfilment.location.gps
+                - operation:
+                    type: READ
+                    value: select_2.message.fulfilment.location.gps
+        - operation:
+            type: EQUAL
+            input:
+              values:
+                - operation:
+                    type: READ
+                    value: select_1.message.payment.collected_by
+                - 'BAP'
+    non_serviceable_2:
+      action_sequence: 'search, on_search, select, on_select, init, ...'
+      validation:
+        - operation:
