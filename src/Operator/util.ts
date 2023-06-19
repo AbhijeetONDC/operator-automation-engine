@@ -4,11 +4,15 @@ import {
   EqualOperation,
   NotEqualOperation,
   GenerateTmpstmpOperation,
+  GreaterThanOperation,
+  LessThanOperation,
+  IfThenOperation,
+  KeyExistsOperation,
 } from './index';
 import { Input } from './schema';
 import { AllExecutableOperations, GenericObject, IOperationInput, Operation, OPERATIONS } from './types';
 
-const evaluateOperation = (context: GenericObject, op: Operation) => {
+const evaluateOperation = (context: GenericObject, op: Operation): string => {
   const opt = __getOperation(context, op.type);
   if (op.input) {
     opt.input = __evaluateInput(context, op.input);
@@ -38,6 +42,14 @@ const __getOperation = (context: GenericObject, opType: OPERATIONS): AllExecutab
       return new EqualOperation(context);
     case 'NOT_EQUAL':
       return new NotEqualOperation(context);
+    case 'GREATER_THAN':
+      return new GreaterThanOperation(context);
+    case 'LESS_THAN':
+      return new LessThanOperation(context);
+    case 'CHECK_IF_KEY_EXISTS':
+      return new KeyExistsOperation(context);
+    case 'IF_THEN':
+      return new IfThenOperation(context);
     default:
       throw new Error('Operation not found');
   }
