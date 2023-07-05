@@ -1,5 +1,6 @@
 import { evaluateOperation } from './Operator/util';
 import { OPERATIONS, InstructionSet } from './Operator/types';
+import { LogVerification } from './LogVerification';
 
 const samplePayload = {
   message: {
@@ -101,3 +102,21 @@ const runInstructionSet = (instructionSet: InstructionSet[]) => {
 };
 
 runInstructionSet(instructionSetSample);
+
+const issueLogPath = process.cwd() + 'src/dummy-logs/issue.json';
+
+const constructDummyPaths = () => {
+  const fileNames = ['issue', 'on_issue', 'issue_status', 'on_issue_status'];
+
+  const paths = fileNames.map((name) => {
+    return `${process.cwd()}/src/dummy-logs/${name}.json`;
+  });
+  return paths;
+};
+
+const logsPath = constructDummyPaths();
+
+console.log(logsPath);
+
+const logs = new LogVerification(logsPath);
+logs.generateReport();

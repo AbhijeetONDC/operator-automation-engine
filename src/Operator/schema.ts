@@ -20,7 +20,6 @@ class Input extends IOElement {
   constructor(context: GenericObject = {}, input: IOperationInput) {
     super();
     this.context = context;
-    // this.operation = input.operation;
     if (!input.value && !input.values) throw new Error('No values found');
     this.value = input.value || input.values;
     this.__process();
